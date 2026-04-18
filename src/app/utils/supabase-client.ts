@@ -2,8 +2,16 @@ import { createClient } from '@supabase/supabase-js';
 import { projectId as _projectId, publicAnonKey as _publicAnonKey } from '/utils/supabase/info';
 
 // Vercel 환경변수 우선 사용, 없으면 Figma Make 하드코딩 값 폴백
-const projectId = import.meta.env.VITE_SUPABASE_PROJECT_ID || "bwifhsxbsydzrqznwjnl";
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ3aWZoc3hic3lkenJxem53am5sIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzNzQxMDMsImV4cCI6MjA5MTk1MDEwM30.9bZU0MEX9zb_XKQTvw0dQAn46uiNKjMQyApxCQKPzD8";
+const projectId = import.meta.env.VITE_SUPABASE_PROJECT_ID || _projectId;
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || _publicAnonKey;
+
+// ─── 디버그 로그 (어떤 값이 사용되는지 확인) ──────────────────────────
+const isUsingCustomKey = !!import.meta.env.VITE_SUPABASE_PROJECT_ID;
+console.log(`[Supabase] 환경: ${isUsingCustomKey ? '✅ Vercel (사용자 키)' : '⚠️ Figma Make (기본 키)'}`);
+console.log(`[Supabase] Project ID: ${projectId}`);
+console.log(`[Supabase] Key 형식: ${supabaseAnonKey?.startsWith('eyJ') ? '✅ JWT (정상)' : '❌ 비JWT - Legacy anon key를 사용해야 합니다!'}`);
+console.log(`[Supabase] Key 앞 20자: ${supabaseAnonKey?.substring(0, 20)}...`);
+// ────────────────────────────────────────────────────────────────────
 
 const supabaseUrl = `https://${projectId}.supabase.co`;
 const supabaseKey = supabaseAnonKey;
